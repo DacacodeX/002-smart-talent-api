@@ -1,4 +1,4 @@
-const { Entity } = require('../models');
+const { Entity, User, Role } = require('../models');
 const { validationResult } = require('express-validator');
 
 const EntityController = {
@@ -11,26 +11,58 @@ const EntityController = {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { name, description } = req.body;
+      const { type, documentNumber, firstName, lastName, businessName, email } = req.body;
 
-      // Verificar si la entidad ya existe
+      // Verificar si la entidad ya existe por documento
       const entityExists = await Entity.findOne({ 
-        where: { name }
+        where: { documentNumber }
       });
       if (entityExists) {
-        return res.status(400).json({ message: 'La entidad ya existe' });
+        return res.status(400).json({ message: 'Ya existe una entidad con este número de documento' });
+      }
+
+      // Verificar si ya existe un usuario con ese email
+      const userExists = await User.findOne({
+        where: { email }
+      });
+      if (userExists) {
+        return res.status(400).json({ message: 'Ya existe un usuario con este email' });
       }
 
       // Crear nueva entidad
       const entity = await Entity.create({
-        name,
-        description,
+        type,
+        documentNumber,
+        firstName,
+        lastName,
+        businessName,
         active: true
       });
 
+      // Obtener el rol USER
+      const userRole = await Role.findOne({ where: { name: 'USER' } });
+      if (!userRole) {
+        return res.status(500).json({ message: 'Error al asignar rol: Rol USER no encontrado' });
+      }
+
+      // Crear usuario asociado
+      const user = await User.create({
+        username: type === 'NATURAL' ? firstName + lastName : businessName,
+        email,
+        password: documentNumber, // La contraseña será el DNI o RUC
+        active: true
+      });
+
+      // Asignar rol al usuario
+      await user.setRoles([userRole]);
+
       res.status(201).json({
-        message: 'Entidad creada exitosamente',
-        entity
+        message: 'Entidad y usuario creados exitosamente',
+        entity,
+        user: {
+          email: user.email,
+          username: user.username
+        }
       });
     } catch (error) {
       console.error('Error al crear entidad:', error);

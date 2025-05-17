@@ -7,15 +7,13 @@ const AuthController = {
   // Registro de usuario
   register: async (req, res) => {
     try {
-      // Verificar errores de validación
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { username, email, password, firstName, lastName } = req.body;
+      const { username, email, password } = req.body;
 
-      // Verificar si el usuario ya existe usando Sequelize
       const userExists = await User.findOne({
         where: {
           [Op.or]: [{ email: email }, { username: username }]
@@ -25,38 +23,29 @@ const AuthController = {
         return res.status(400).json({ message: 'El usuario o correo electrónico ya está registrado' });
       }
 
-      // Obtener rol por defecto (USER)
       const defaultRole = await Role.findOne({ where: { name: 'USER' } });
       if (!defaultRole) {
         return res.status(500).json({ message: 'Error al asignar rol por defecto: Rol USER no encontrado' });
       }
 
-      // Crear nuevo usuario
       const user = await User.create({
         username,
         email,
-        password, // La encriptación de contraseña debe manejarse en el modelo User como un hook
-        firstName,
-        lastName,
-        // Las asociaciones se manejan después de crear el usuario
+        password,
       });
 
-      // Establecer rol por defecto para el usuario
-      await user.setRoles([defaultRole]); // Método de asociación many-to-many
+      await user.setRoles([defaultRole]);
 
-      // Recargar el usuario con los roles asociados para la respuesta
       const userWithRoles = await User.findByPk(user.id, {
         include: [{
           model: Role,
-          attributes: ['name'], // Solo necesitamos el nombre del rol para el token y la respuesta
-          through: { attributes: [] } // Excluir la tabla intermedia UserRoles
+          attributes: ['name'],
+          through: { attributes: [] }
         }]
       });
 
-      // Obtener nombres de roles
       const roleNames = userWithRoles.Roles.map(role => role.name);
 
-      // Generar token JWT
       const token = jwt.sign(
         { id: userWithRoles.id, roles: roleNames },
         process.env.JWT_SECRET,
@@ -70,8 +59,6 @@ const AuthController = {
           id: userWithRoles.id,
           username: userWithRoles.username,
           email: userWithRoles.email,
-          firstName: userWithRoles.firstName,
-          lastName: userWithRoles.lastName,
           roles: roleNames
         }
       });

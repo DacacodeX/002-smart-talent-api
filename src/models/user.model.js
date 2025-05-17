@@ -22,10 +22,7 @@ module.exports = (sequelize) => {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
-      validate: {
-        len: [3, 50]
-      }
+      unique: true
     },
     email: {
       type: DataTypes.STRING,
@@ -37,19 +34,6 @@ module.exports = (sequelize) => {
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
-      set(value) {
-        // Hash de la contraseña antes de guardarla
-        const salt = bcrypt.genSaltSync(10);
-        this.setDataValue('password', bcrypt.hashSync(value, salt));
-      }
-    },
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    lastName: {
-      type: DataTypes.STRING,
       allowNull: false
     },
     active: {
@@ -57,9 +41,15 @@ module.exports = (sequelize) => {
       defaultValue: true
     }
   }, {
-    sequelize, // Aquí está la corrección principal
-    timestamps: true,
-    modelName: 'User' // Agregamos el nombre del modelo explícitamente
+    sequelize,
+    modelName: 'User',
+    hooks: {
+      beforeCreate: async (user) => {
+        if (user.password) {
+          user.password = await bcrypt.hash(user.password, 10);
+        }
+      }
+    }
   });
 
   return User;

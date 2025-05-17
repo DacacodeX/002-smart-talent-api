@@ -6,15 +6,13 @@ const UserController = {
   // Crear un nuevo usuario
   create: async (req, res) => {
     try {
-      // Verificar errores de validación
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { username, email, password, firstName, lastName, roles } = req.body;
+      const { username, email, password, roles } = req.body;
 
-      // Verificar si el usuario ya existe usando Sequelize
       const userExists = await User.findOne({
         where: {
           [Op.or]: [{ email: email }, { username: username }]
@@ -24,10 +22,8 @@ const UserController = {
         return res.status(400).json({ message: 'El usuario o correo electrónico ya está registrado' });
       }
 
-      // Obtener roles o asignar rol por defecto (USER)
       let userRoles = [];
       if (roles && roles.length > 0) {
-        // Buscar roles por nombre
         const foundRoles = await Role.findAll({
           where: {
             name: {
@@ -35,39 +31,31 @@ const UserController = {
             }
           }
         });
-        userRoles = foundRoles; // Sequelize devuelve objetos modelo completos
+        userRoles = foundRoles;
       } else {
-        // Buscar rol por defecto
         const defaultRole = await Role.findOne({ where: { name: 'USER' } });
         if (defaultRole) {
-          userRoles = [defaultRole]; // Sequelize devuelve objetos modelo completos
+          userRoles = [defaultRole];
         }
       }
 
-      // Crear nuevo usuario
       const user = await User.create({
         username,
         email,
-        password, // La encriptación de contraseña debe manejarse en el modelo User si no está ya
-        firstName,
-        lastName,
-        // Las asociaciones se manejan después de crear el usuario
+        password,
       });
 
-      // Establecer roles para el usuario
       if (userRoles.length > 0) {
-        await user.setRoles(userRoles); // Método de asociación many-to-many
+        await user.setRoles(userRoles);
       }
 
-      // Recargar el usuario con los roles asociados para la respuesta
       const userWithRoles = await User.findByPk(user.id, {
         include: [{
           model: Role,
           attributes: ['name', 'description'],
-          through: { attributes: [] } // Excluir la tabla intermedia UserRoles
+          through: { attributes: [] }
         }]
       });
-
 
       res.status(201).json({
         message: 'Usuario creado exitosamente',
@@ -75,9 +63,7 @@ const UserController = {
           id: userWithRoles.id,
           username: userWithRoles.username,
           email: userWithRoles.email,
-          firstName: userWithRoles.firstName,
-          lastName: userWithRoles.lastName,
-          roles: userWithRoles.Roles.map(role => role.name) // Mapear a solo nombres de rol
+          roles: userWithRoles.Roles.map(role => role.name)
         }
       });
     } catch (error) {
