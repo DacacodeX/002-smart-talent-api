@@ -1,4 +1,4 @@
-const { Role } = require('../models');
+const { Role, User } = require('../models');
 const { validationResult } = require('express-validator');
 
 const RoleController = {
@@ -99,14 +99,28 @@ const RoleController = {
   // Eliminar un rol
   delete: async (req, res) => {
     try {
-      const role = await Role.findByPk(req.params.id);
+      const role = await Role.findByPk(req.params.id, {
+        include: [{
+          model: User,
+          through: { attributes: [] }
+        }]
+      });
+
       if (!role) {
         return res.status(404).json({ message: 'Rol no encontrado' });
       }
 
       // Verificar si es un rol predeterminado del sistema
-      if (['ADMIN', 'USER'].includes(role.name)) {
+      if (['ADMIN', 'MANAGER', 'USER'].includes(role.name)) {
         return res.status(400).json({ message: 'No se puede eliminar un rol predeterminado del sistema' });
+      }
+
+      // Verificar si hay usuarios con este rol
+      if (role.Users && role.Users.length > 0) {
+        return res.status(400).json({ 
+          message: 'No se puede eliminar el rol porque hay usuarios asignados a él',
+          usersCount: role.Users.length
+        });
       }
 
       await role.destroy();

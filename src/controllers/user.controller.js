@@ -173,7 +173,7 @@ const UserController = {
     }
   },
 
-  // Eliminar un usuario
+  // Eliminar un usuario (soft delete)
   delete: async (req, res) => {
     try {
       const user = await User.findByPk(req.params.id);
@@ -181,11 +181,21 @@ const UserController = {
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }
 
-      await user.destroy(); // Usar el método destroy de la instancia del modelo
-      res.status(200).json({ message: 'Usuario eliminado exitosamente' });
+      user.active = false;
+      await user.save();
+
+      res.status(200).json({ 
+        message: 'Usuario desactivado exitosamente',
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          active: user.active
+        }
+      });
     } catch (error) {
-      console.error('Error al eliminar usuario:', error);
-      res.status(500).json({ message: 'Error al eliminar usuario', error: error.message });
+      console.error('Error al desactivar usuario:', error);
+      res.status(500).json({ message: 'Error al desactivar usuario', error: error.message });
     }
   }
 };
