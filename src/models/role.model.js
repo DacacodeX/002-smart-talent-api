@@ -6,9 +6,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: {
-        isIn: [['ADMIN', 'USER', 'MANAGER', 'GUEST']]
-      }
+      // validate: {
+      //   isIn: [['ADMIN', 'USER', 'MANAGER', 'GUEST']]
+      // }
     },
     description: {
       type: DataTypes.STRING,
@@ -17,17 +17,17 @@ module.exports = (sequelize) => {
     permissions: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       defaultValue: [],
-      validate: {
-        isValidPermission(value) {
-          if (!Array.isArray(value)) return;
-          const validPermissions = ['CREATE', 'READ', 'UPDATE', 'DELETE'];
-          for (const permission of value) {
-            if (!validPermissions.includes(permission)) {
-              throw new Error(`Permiso inválido: ${permission}`);
-            }
-          }
-        }
-      }
+      // validate: {
+      //  isValidPermission(value) {
+      //    if (!Array.isArray(value)) return;
+      //    const validPermissions = ['CREATE', 'READ', 'UPDATE', 'DELETE'];
+      //    for (const permission of value) {
+      //      if (!validPermissions.includes(permission)) {
+      //        throw new Error(`Permiso inválido: ${permission}`);
+      //      }
+      //    }
+      //  }
+      // }
     }
     ,
     active: {

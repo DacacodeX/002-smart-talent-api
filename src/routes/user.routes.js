@@ -29,8 +29,6 @@ const { userValidation } = require('../middleware/validation.middleware');
  *               - username
  *               - email
  *               - password
- *               - firstName
- *               - lastName
  *             properties:
  *               username:
  *                 type: string
@@ -43,12 +41,6 @@ const { userValidation } = require('../middleware/validation.middleware');
  *                 type: string
  *                 format: password
  *                 description: Contraseña del usuario
- *               firstName:
- *                 type: string
- *                 description: Nombre del usuario
- *               lastName:
- *                 type: string
- *                 description: Apellido del usuario
  *               roles:
  *                 type: array
  *                 items:
@@ -122,10 +114,6 @@ router.post('/', [
  *                     type: string
  *                   email:
  *                     type: string
- *                   firstName:
- *                     type: string
- *                   lastName:
- *                     type: string
  *                   roles:
  *                     type: array
  *                     items:
@@ -177,10 +165,6 @@ router.get('/', [
  *                   type: string
  *                 email:
  *                   type: string
- *                 firstName:
- *                   type: string
- *                 lastName:
- *                   type: string
  *                 roles:
  *                   type: array
  *                   items:
@@ -227,17 +211,11 @@ router.get('/:id', [
  *           schema:
  *             type: object
  *             properties:
- *               firstName:
- *                 type: string
- *                 description: Nuevo nombre del usuario
- *               lastName:
- *                 type: string
- *                 description: Nuevo apellido del usuario
  *               roles:
  *                 type: array
  *                 items:
  *                   type: string
- *                 description: Nueva lista de nombres de roles a asignar (ej. ["USER"])
+ *                   description: Nueva lista de nombres de roles a asignar (ej. ["USER"])
  *     responses:
  *       200:
  *         description: Usuario actualizado exitosamente
@@ -257,10 +235,6 @@ router.get('/:id', [
  *                     username:
  *                       type: string
  *                     email:
- *                       type: string
- *                     firstName:
- *                       type: string
- *                     lastName:
  *                       type: string
  *                     roles:
  *                       type: array

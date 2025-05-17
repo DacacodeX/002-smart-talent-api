@@ -34,7 +34,7 @@ const roleValidation = {
   // Validación para crear rol
   create: [
     check('name', 'El nombre del rol es obligatorio').not().isEmpty(),
-    check('name', 'El nombre del rol debe ser uno de: ADMIN, USER, MANAGER, GUEST').isIn(['ADMIN', 'USER', 'MANAGER', 'GUEST']),
+    // check('name', 'El nombre del rol debe ser uno de: ADMIN, USER, MANAGER, GUEST').isIn(['ADMIN', 'USER', 'MANAGER', 'GUEST']),
     check('description', 'La descripción del rol es obligatoria').not().isEmpty(),
     check('permissions', 'Los permisos deben ser un array').isArray()
   ],
@@ -46,4 +46,58 @@ const roleValidation = {
   ]
 };
 
-module.exports = { userValidation, authValidation, roleValidation };
+const entityValidation = {
+  create: [
+    check('type')
+      .notEmpty().withMessage('El tipo de entidad es requerido')
+      .isIn(['NATURAL', 'JURIDICA']).withMessage('El tipo debe ser NATURAL o JURIDICA'),
+    check('documentNumber')
+      .notEmpty().withMessage('El número de documento es requerido')
+      .custom((value, { req }) => {
+        if (req.body.type === 'NATURAL' && !/^\d{8}$/.test(value)) {
+          throw new Error('El DNI debe tener 8 dígitos');
+        }
+        if (req.body.type === 'JURIDICA' && !/^\d{11}$/.test(value)) {
+          throw new Error('El RUC debe tener 11 dígitos');
+        }
+        return true;
+      }),
+    check('email')
+      .notEmpty().withMessage('El email es requerido')
+      .isEmail().withMessage('Debe proporcionar un email válido'),
+    check('firstName')
+      .if(check('type').equals('NATURAL'))
+      .notEmpty().withMessage('El nombre es requerido para personas naturales'),
+    check('lastName')
+      .if(check('type').equals('NATURAL'))
+      .notEmpty().withMessage('El apellido es requerido para personas naturales'),
+    check('businessName')
+      .if(check('type').equals('JURIDICA'))
+      .notEmpty().withMessage('La razón social es requerida para personas jurídicas')
+  ],
+  
+  update: [
+    check('type')
+      .optional()
+      .isIn(['NATURAL', 'JURIDICA']).withMessage('El tipo debe ser NATURAL o JURIDICA'),
+    check('documentNumber')
+      .optional()
+      .custom((value, { req }) => {
+        if (req.body.type === 'NATURAL' && !/^\d{8}$/.test(value)) {
+          throw new Error('El DNI debe tener 8 dígitos');
+        }
+        if (req.body.type === 'JURIDICA' && !/^\d{11}$/.test(value)) {
+          throw new Error('El RUC debe tener 11 dígitos');
+        }
+        return true;
+      }),
+    check('email')
+      .optional()
+      .isEmail().withMessage('Debe proporcionar un email válido'),
+    check('active')
+      .optional()
+      .isBoolean().withMessage('El campo active debe ser un valor booleano')
+  ]
+};
+
+module.exports = { userValidation, authValidation, roleValidation, entityValidation };

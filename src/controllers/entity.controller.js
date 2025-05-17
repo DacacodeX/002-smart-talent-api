@@ -108,7 +108,7 @@ const EntityController = {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { name, description, active } = req.body;
+      const { type, documentNumber, firstName, lastName, businessName, email, active } = req.body;
       
       // Buscar entidad
       let entity = await Entity.findByPk(req.params.id);
@@ -116,12 +116,38 @@ const EntityController = {
         return res.status(404).json({ message: 'Entidad no encontrada' });
       }
 
+      // Verificar si el documento ya existe en otra entidad
+      if (documentNumber) {
+        const existingEntity = await Entity.findOne({
+          where: {
+            documentNumber,
+            id: { [Op.ne]: req.params.id } // Excluir la entidad actual
+          }
+        });
+        if (existingEntity) {
+          return res.status(400).json({ message: 'Ya existe una entidad con este número de documento' });
+        }
+      }
+
       // Actualizar datos
-      entity.name = name || entity.name;
-      entity.description = description || entity.description;
+      entity.type = type || entity.type;
+      entity.documentNumber = documentNumber || entity.documentNumber;
+      entity.firstName = firstName || entity.firstName;
+      entity.lastName = lastName || entity.lastName;
+      entity.businessName = businessName || entity.businessName;
       entity.active = active !== undefined ? active : entity.active;
       
       await entity.save();
+
+      // Si se proporciona email, actualizar el usuario asociado
+      if (email) {
+        const user = await User.findOne({ where: { email: entity.email } });
+        if (user) {
+          user.email = email;
+          user.username = type === 'NATURAL' ? firstName + lastName : businessName;
+          await user.save();
+        }
+      }
 
       res.status(200).json({
         message: 'Entidad actualizada exitosamente',

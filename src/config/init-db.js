@@ -1,21 +1,10 @@
 const { sequelize, Role, User } = require('../models');
 require('dotenv').config();
 
-// Función para inicializar la base de datos con roles predeterminados
 const initDatabase = async () => {
   try {
-    // Sincronizar modelos con la base de datos
     await sequelize.sync({ force: true });
     console.log('Conexión a PostgreSQL establecida para inicialización');
-
-    // Verificar si ya existen roles
-    // const count = await Role.count();
-    
-    // Si ya existen roles, no hacer nada
-    // if (count > 0) {
-    //   console.log('La base de datos ya está inicializada con roles');
-    //   return;
-    // }
 
     // Crear roles predeterminados
     const roles = [
@@ -42,28 +31,60 @@ const initDatabase = async () => {
     ];
 
     // Insertar roles en la base de datos
-    const createdRoles = await Role.bulkCreate(roles);
-    
+    await Role.bulkCreate(roles);
     console.log('Roles predeterminados creados exitosamente');
 
-    // Crear usuario administrador por defecto
-    const adminRole = await Role.findOne({ where: { name: 'ADMIN' } });
-    
-    const adminUser = await User.create({
-      username: 'admin',
-      email: 'admin@smarttalent.com',
-      password: 'Admin@123',
-      firstName: 'Admin',
-      lastName: 'System',
-      active: true  // Cambiado de isActive a active para coincidir con el modelo
-    });
+    // Crear usuarios para cada rol
+    const usersData = [
+      {
+        username: 'admin',
+        email: 'admin@smarttalent.com',
+        password: 'Admin@123',
+        firstName: 'Admin',
+        lastName: 'System',
+        active: true,
+        roleName: 'ADMIN'
+      },
+      {
+        username: 'manager',
+        email: 'manager@smarttalent.com',
+        password: 'Manager@123',
+        firstName: 'Manager',
+        lastName: 'System',
+        active: true,
+        roleName: 'MANAGER'
+      },
+      {
+        username: 'user',
+        email: 'user@smarttalent.com',
+        password: 'User@123',
+        firstName: 'User',
+        lastName: 'Standard',
+        active: true,
+        roleName: 'USER'
+      },
+      {
+        username: 'guest',
+        email: 'guest@smarttalent.com',
+        password: 'Guest@123',
+        firstName: 'Guest',
+        lastName: 'Visitor',
+        active: true,
+        roleName: 'GUEST'
+      }
+    ];
 
-    // Asignar rol de administrador al usuario
-    await adminUser.addRole(adminRole);
-    
-    console.log('Usuario administrador creado exitosamente');
-    console.log('Email: admin@smarttalent.com');
-    console.log('Contraseña: Admin@123');
+    // Crear usuarios y asignar roles
+    for (const userData of usersData) {
+      const { roleName, ...userInfo } = userData;
+      const user = await User.create(userInfo);
+      const role = await Role.findOne({ where: { name: roleName } });
+      await user.addRole(role);
+      console.log(`Usuario ${roleName} creado exitosamente`);
+      console.log(`Email: ${userInfo.email}`);
+      console.log(`Contraseña: ${userInfo.password}`);
+      console.log('-------------------');
+    }
 
   } catch (error) {
     console.error('Error al inicializar la base de datos:', error);

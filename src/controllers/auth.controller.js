@@ -158,8 +158,6 @@ const AuthController = {
         id: user.id,
         username: user.username,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
         roles: user.Roles.map(role => ({ name: role.name, description: role.description }))
       });
 

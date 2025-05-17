@@ -55,10 +55,6 @@ const { authValidation } = require('../middleware/validation.middleware');
  *                       type: string
  *                     email:
  *                       type: string
- *                     firstName:
- *                       type: string
- *                     lastName:
- *                       type: string
  *                     roles:
  *                       type: array
  *                       items:
@@ -95,10 +91,6 @@ router.post('/login', [
  *                 username:
  *                   type: string
  *                 email:
- *                   type: string
- *                 firstName:
- *                   type: string
- *                 lastName:
  *                   type: string
  *                 roles:
  *                   type: array

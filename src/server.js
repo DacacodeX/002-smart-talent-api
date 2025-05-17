@@ -11,6 +11,7 @@ const { sequelize, testConnection } = require('./config/database');
 const { userRoutes } = require('./routes/user.routes');
 const { authRoutes } = require('./routes/auth.routes');
 const { roleRoutes } = require('./routes/role.routes');
+const { entityRoutes } = require('./routes/entity.routes')
 
 // Inicializar la aplicación
 const app = express();
@@ -31,6 +32,7 @@ app.use(morgan('dev'));
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/roles', roleRoutes);
+app.use('/api/entities', entityRoutes);
 
 // Documentación Swagger
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
