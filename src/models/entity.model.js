@@ -15,6 +15,25 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    type: {
+      type: DataTypes.ENUM('NATURAL', 'JURIDICA'),
+      allowNull: false
+    },
+    documentNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isValidDocument(value) {
+          if (this.type === 'NATURAL' && !/^\d{8}$/.test(value)) {
+            throw new Error('El DNI debe tener 8 dígitos');
+          }
+          if (this.type === 'JURIDICA' && !/^\d{11}$/.test(value)) {
+            throw new Error('El RUC debe tener 11 dígitos');
+          }
+        }
+      }
+    },
     description: {
       type: DataTypes.TEXT
     },
