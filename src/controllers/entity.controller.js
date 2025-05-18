@@ -1,8 +1,7 @@
-const { Entity, User, Role } = require('../models');
+const { Entity, User, Role, Request } = require('../models');
 const { validationResult } = require('express-validator');
 
 const EntityController = {
-  // Crear una nueva entidad
   create: async (req, res) => {
     try {
       // Verificar errores de validación
@@ -23,7 +22,7 @@ const EntityController = {
 
       // Verificar si ya existe un usuario con ese email
       const userExists = await User.findOne({
-        where: { email }
+        where: { email, active: true }
       });
       if (userExists) {
         return res.status(400).json({ message: 'Ya existe un usuario con este email' });
@@ -50,7 +49,8 @@ const EntityController = {
         username: type === 'NATURAL' ? firstName + lastName : businessName,
         email,
         password: documentNumber, // La contraseña será el DNI o RUC
-        active: true
+        active: true,
+        entityId: entity.id  // Establecer la relación con la entidad
       });
 
       // Asignar rol al usuario
@@ -74,7 +74,16 @@ const EntityController = {
   getAll: async (req, res) => {
     try {
       const entities = await Entity.findAll({
-        include: ['requests'] // Incluir las solicitudes relacionadas
+        include: [{
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'email'],
+          include: [{
+            model: Role,
+            attributes: ['name'],
+            through: { attributes: [] }
+          }]
+        }]
       });
       res.status(200).json(entities);
     } catch (error) {
@@ -87,7 +96,16 @@ const EntityController = {
   getById: async (req, res) => {
     try {
       const entity = await Entity.findByPk(req.params.id, {
-        include: ['requests'] // Incluir las solicitudes relacionadas
+        include: [{
+          model: User,
+          as: 'user',
+          attributes: ['id', 'username', 'email'],
+          include: [{
+            model: Role,
+            attributes: ['name'],
+            through: { attributes: [] }
+          }]
+        }]
       });
       if (!entity) {
         return res.status(404).json({ message: 'Entidad no encontrada' });

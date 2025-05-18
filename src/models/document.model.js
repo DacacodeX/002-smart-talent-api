@@ -3,28 +3,26 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class Document extends Model {
     static associate(models) {
-      Document.belongsTo(models.Person, {
-        foreignKey: 'personId',
-        as: 'person'
-      });
-      Document.hasMany(models.Resource, {
-        foreignKey: 'documentId',
-        as: 'resources'
-      });
+      
     }
   }
 
   Document.init({
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     type: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    description: {
-      type: DataTypes.TEXT
+    url: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    result: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    status: {
+      type: DataTypes.ENUM('PENDING', 'APPROVED', 'REJECTED'),
+      defaultValue: 'PENDING'
     },
     personId: {
       type: DataTypes.INTEGER,

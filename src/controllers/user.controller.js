@@ -15,7 +15,8 @@ const UserController = {
 
       const userExists = await User.findOne({
         where: {
-          [Op.or]: [{ email: email }, { username: username }]
+          [Op.or]: [{ email: email }, { username: username }],
+          active: true
         }
       });
       if (userExists) {
@@ -77,6 +78,7 @@ const UserController = {
     try {
       const users = await User.findAll({
         attributes: { exclude: ['password'] }, // Excluir la contraseña
+        where: { active: true }, // Solo usuarios activos
         include: [{
           model: Role,
           attributes: ['name', 'description'],
@@ -94,7 +96,8 @@ const UserController = {
   getById: async (req, res) => {
     try {
       const user = await User.findByPk(req.params.id, {
-        attributes: { exclude: ['password'] }, // Excluir la contraseña
+        attributes: { exclude: ['password'] },
+        where: { active: true },
         include: [{
           model: Role,
           attributes: ['name', 'description'],
@@ -123,7 +126,7 @@ const UserController = {
       const { firstName, lastName, roles } = req.body;
 
       // Buscar usuario
-      let user = await User.findByPk(req.params.id);
+      let user = await User.findAll({ where: { id: req.params.id, active: true } });
       if (!user) {
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }
@@ -176,7 +179,7 @@ const UserController = {
   // Eliminar un usuario (soft delete)
   delete: async (req, res) => {
     try {
-      const user = await User.findByPk(req.params.id);
+      const user = await User.find({ where: { id: req.params.id, active: true } });
       if (!user) {
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }
@@ -184,7 +187,7 @@ const UserController = {
       user.active = false;
       await user.save();
 
-      res.status(200).json({ 
+      res.status(200).json({
         message: 'Usuario desactivado exitosamente',
         user: {
           id: user.id,

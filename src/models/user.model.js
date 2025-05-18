@@ -6,6 +6,10 @@ module.exports = (sequelize) => {
     static associate(models) {
       // Define las asociaciones aquí si es necesario
       User.belongsToMany(models.Role, { through: 'UserRoles' });
+      User.belongsTo(models.Entity, {
+        foreignKey: 'entityId',
+        as: 'entity'
+      });
     }
 
     // Método para comparar contraseñas
@@ -22,7 +26,6 @@ module.exports = (sequelize) => {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
     },
     email: {
       type: DataTypes.STRING,

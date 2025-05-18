@@ -11,7 +11,8 @@ const { sequelize, testConnection } = require('./config/database');
 const { userRoutes } = require('./routes/user.routes');
 const { authRoutes } = require('./routes/auth.routes');
 const { roleRoutes } = require('./routes/role.routes');
-const { entityRoutes } = require('./routes/entity.routes')
+const { entityRoutes } = require('./routes/entity.routes');
+const { requestRoutes } = require('./routes/request.routes');
 
 // Inicializar la aplicación
 const app = express();
@@ -21,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Configuración de CORS para permitir todos los orígenes
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://zero01-back-restaurant-erp.onrender.com'], // Permite cualquier origen
+  origin: ['http://localhost:3001', 'https://zero01-back-restaurant-erp.onrender.com'], // Permite cualquier origen
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Permite los métodos HTTP comunes
   allowedHeaders: ['Content-Type', 'Authorization', 'x-access-token'], // Permite los encabezados comunes
 }));
@@ -33,6 +34,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/entities', entityRoutes);
+app.use('/api/requests', requestRoutes);
 
 // Documentación Swagger
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));

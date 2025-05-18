@@ -3,23 +3,16 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class Resource extends Model {
     static associate(models) {
-      Resource.belongsTo(models.Document, {
-        foreignKey: 'documentId',
-        as: 'document'
-      });
+      
     }
   }
 
   Resource.init({
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    url: {
+    value: {
       type: DataTypes.STRING,
       allowNull: false
     },

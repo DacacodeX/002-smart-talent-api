@@ -4,7 +4,57 @@ const { EntityController } = require('../controllers/entity.controller');
 const { authMiddleware, roleMiddleware } = require('../middleware/auth.middleware');
 const { entityValidation } = require('../middleware/validation.middleware');
 
-// Crear una nueva entidad
+/**
+ * @swagger
+ * /api/entities:
+ *   post:
+ *     summary: Crear una nueva entidad (Admin, Manager)
+ *     tags: [Entities]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - type
+ *               - documentNumber
+ *               - email
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 enum: [NATURAL, JURIDICA]
+ *                 description: Tipo de entidad
+ *               documentNumber:
+ *                 type: string
+ *                 description: DNI (8 dígitos) o RUC (11 dígitos)
+ *               firstName:
+ *                 type: string
+ *                 description: Nombres (requerido para tipo NATURAL)
+ *               lastName:
+ *                 type: string
+ *                 description: Apellidos (requerido para tipo NATURAL)
+ *               businessName:
+ *                 type: string
+ *                 description: Razón social (requerido para tipo JURIDICA)
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Correo electrónico de la entidad
+ *     responses:
+ *       201:
+ *         description: Entidad creada exitosamente
+ *       400:
+ *         description: Datos inválidos o entidad ya existe
+ *       401:
+ *         description: No autenticado
+ *       403:
+ *         description: No autorizado (requiere rol ADMIN o MANAGER)
+ *       500:
+ *         description: Error del servidor
+ */
 router.post('/', [
     authMiddleware,
     roleMiddleware(['ADMIN', 'MANAGER']),
@@ -13,7 +63,50 @@ router.post('/', [
   EntityController.create
 );
 
-// Obtener todas las entidades
+/**
+ * @swagger
+ * /api/entities:
+ *   get:
+ *     summary: Obtener todas las entidades (Admin, Manager)
+ *     tags: [Entities]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de entidades
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   type:
+ *                     type: string
+ *                     enum: [NATURAL, JURIDICA]
+ *                   documentNumber:
+ *                     type: string
+ *                   firstName:
+ *                     type: string
+ *                   lastName:
+ *                     type: string
+ *                   businessName:
+ *                     type: string
+ *                   active:
+ *                     type: boolean
+ *                   requests:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *       401:
+ *         description: No autenticado
+ *       403:
+ *         description: No autorizado (requiere rol ADMIN o MANAGER)
+ *       500:
+ *         description: Error del servidor
+ */
 router.get('/', [
     authMiddleware,
     roleMiddleware(['ADMIN', 'MANAGER'])
@@ -21,7 +114,57 @@ router.get('/', [
   EntityController.getAll
 );
 
-// Obtener una entidad por ID
+/**
+ * @swagger
+ * /api/entities/{id}:
+ *   get:
+ *     summary: Obtener una entidad por ID (Admin, Manager)
+ *     tags: [Entities]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la entidad
+ *     responses:
+ *       200:
+ *         description: Entidad encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 type:
+ *                   type: string
+ *                   enum: [NATURAL, JURIDICA]
+ *                 documentNumber:
+ *                   type: string
+ *                 firstName:
+ *                   type: string
+ *                 lastName:
+ *                   type: string
+ *                 businessName:
+ *                   type: string
+ *                 active:
+ *                   type: boolean
+ *                 requests:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       401:
+ *         description: No autenticado
+ *       403:
+ *         description: No autorizado (requiere rol ADMIN o MANAGER)
+ *       404:
+ *         description: Entidad no encontrada
+ *       500:
+ *         description: Error del servidor
+ */
 router.get('/:id', [
     authMiddleware,
     roleMiddleware(['ADMIN', 'MANAGER'])
@@ -29,7 +172,58 @@ router.get('/:id', [
   EntityController.getById
 );
 
-// Actualizar una entidad
+/**
+ * @swagger
+ * /api/entities/{id}:
+ *   put:
+ *     summary: Actualizar una entidad (Admin, Manager)
+ *     tags: [Entities]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la entidad
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 enum: [NATURAL, JURIDICA]
+ *               documentNumber:
+ *                 type: string
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               businessName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               active:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Entidad actualizada exitosamente
+ *       400:
+ *         description: Datos inválidos
+ *       401:
+ *         description: No autenticado
+ *       403:
+ *         description: No autorizado (requiere rol ADMIN o MANAGER)
+ *       404:
+ *         description: Entidad no encontrada
+ *       500:
+ *         description: Error del servidor
+ */
 router.put('/:id', [
     authMiddleware,
     roleMiddleware(['ADMIN', 'MANAGER']),
@@ -38,7 +232,33 @@ router.put('/:id', [
   EntityController.update
 );
 
-// Eliminar una entidad
+/**
+ * @swagger
+ * /api/entities/{id}:
+ *   delete:
+ *     summary: Eliminar una entidad (Admin, Manager)
+ *     tags: [Entities]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la entidad
+ *     responses:
+ *       200:
+ *         description: Entidad eliminada exitosamente
+ *       401:
+ *         description: No autenticado
+ *       403:
+ *         description: No autorizado (requiere rol ADMIN o MANAGER)
+ *       404:
+ *         description: Entidad no encontrada
+ *       500:
+ *         description: Error del servidor
+ */
 router.delete('/:id', [
     authMiddleware,
     roleMiddleware(['ADMIN', 'MANAGER'])

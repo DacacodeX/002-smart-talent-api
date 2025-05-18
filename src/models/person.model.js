@@ -3,34 +3,29 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class Person extends Model {
     static associate(models) {
-      Person.belongsTo(models.Request, {
-        foreignKey: 'requestId',
-        as: 'request'
-      });
-      Person.hasMany(models.Document, {
-        foreignKey: 'personId',
-        as: 'documents'
-      });
     }
   }
 
   Person.init({
-    firstName: {
+    names: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    lastName: {
+    dni: {
       type: DataTypes.STRING,
-      allowNull: false
-    },
-    email: {
-      type: DataTypes.STRING,
+      allowNull: false,
+      // unique: true,
       validate: {
-        isEmail: true
+        notEmpty: true,
+        len: [8, 12] 
       }
     },
     phone: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        is: /^\+?[1-9]\d{1,14}$/ // Validación para formato internacional de teléfono
+      }
     },
     requestId: {
       type: DataTypes.INTEGER,

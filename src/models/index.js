@@ -22,6 +22,21 @@ const Resource = ResourceModel(sequelize);
 User.belongsToMany(Role, { through: 'UserRoles' });
 Role.belongsToMany(User, { through: 'UserRoles' });
 
+Entity.hasOne(User, { foreignKey: 'entityId', as: 'user'});
+User.belongsTo(Entity, { foreignKey: 'entityId', as: 'entity' });
+
+Entity.hasMany(Request, { foreignKey: 'entityId', as: 'requests' });
+Request.belongsTo(Entity, { foreignKey: 'entityId', as: 'entity' });
+
+Request.hasMany(Person, { foreignKey: 'requestId', as: 'persons' });
+Person.belongsTo(Request, { foreignKey: 'requestId', as: 'request' });
+
+Person.hasMany(Document, { foreignKey: 'personId', as: 'documents' });
+Document.belongsTo(Person, { foreignKey: 'personId', as: 'person'});
+
+Document.hasMany(Resource, { foreignKey: 'documentId',as: 'resources'});
+Resource.belongsTo(Document, { foreignKey: 'documentId', as: 'document' });
+
 // Exportar modelos y sequelize
 module.exports = {
   sequelize,
