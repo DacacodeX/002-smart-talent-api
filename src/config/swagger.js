@@ -13,9 +13,13 @@ const swaggerDefinition = {
   },
   servers: [
     {
+      url: 'https://smart-talent-api-k6yj.onrender.com',
+      description: 'Servidor de producción',
+    },
+    {
       url: 'http://localhost:3001',
       description: 'Servidor de desarrollo',
-    },
+    }
   ],
   components: {
     securitySchemes: {
