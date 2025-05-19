@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Configuración de CORS para permitir todos los orígenes
 app.use(cors({
-  origin: ['http://localhost:3001', 'https://smart-talent-api-k6yj.onrender.com'], // Permite cualquier origen
+  origin: ['*', 'http://localhost:3001', 'https://smart-talent-api-k6yj.onrender.com'], // Permite cualquier origen
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Permite los métodos HTTP comunes
   allowedHeaders: ['Content-Type', 'Authorization', 'x-access-token'], // Permite los encabezados comunes
 }));
