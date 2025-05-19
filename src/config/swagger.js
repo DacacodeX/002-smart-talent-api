@@ -17,7 +17,7 @@ const swaggerDefinition = {
       description: 'Servidor de producción',
     },
     {
-      url: 'http://localhost:3001',
+      url: 'http://localhost:3000',
       description: 'Servidor de desarrollo',
     }
   ],
