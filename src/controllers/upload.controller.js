@@ -14,8 +14,8 @@ const UploadController = {
       const bucket = admin.storage().bucket();
       const file = bucket.file(fileName);
 
-      // Generar URL firmada para subida
-      const [signedUrl] = await file.generateSignedUrl({
+      // Generar URL firmada para subida usando getSignedUrl en lugar de generateSignedUrl
+      const [signedUrl] = await file.getSignedUrl({
         version: 'v4',
         action: 'write',
         expires: Date.now() + 15 * 60 * 1000, // URL válida por 15 minutos

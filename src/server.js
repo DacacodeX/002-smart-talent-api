@@ -21,10 +21,16 @@ const app = express();
 // Configuración de middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// Configuración de CORS para permitir todos los orígenes
+
+// Configuración de CORS mejorada
 app.use(cors({
-  origin: true, // Esto permite cualquier origen de manera más efectiva
-  credentials: true, // Permite credenciales
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173', // Puerto por defecto de Vite
+    'https://smart-talent-api-k6yj.onrender.com',
+    'https://tu-frontend-en-produccion.com' // Agrega el dominio de tu frontend
+  ],
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-access-token', 'Origin', 'Accept'],
   exposedHeaders: ['Content-Range', 'X-Content-Range']
@@ -65,8 +71,7 @@ const connectDB = async () => {
 };
 
 // Iniciar el servidor
-const PORT =  3002;
-
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   await connectDB();
   console.log(`Accede a la API: http://localhost:${PORT}`);
