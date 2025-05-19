@@ -38,3 +38,6 @@ coverage/
 # Ignorar archivos de base de datos
 *.sqlite
 *.db
+
+# Firebase
+src/config/serviceAccountKey.json

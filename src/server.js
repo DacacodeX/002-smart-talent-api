@@ -13,6 +13,7 @@ const { authRoutes } = require('./routes/auth.routes');
 const { roleRoutes } = require('./routes/role.routes');
 const { entityRoutes } = require('./routes/entity.routes');
 const { requestRoutes } = require('./routes/request.routes');
+const { uploadRoutes } = require('./routes/upload.routes');
 
 // Inicializar la aplicación
 const app = express();
@@ -22,9 +23,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Configuración de CORS para permitir todos los orígenes
 app.use(cors({
-  origin: ['*', 'http://localhost:3001', 'https://smart-talent-api-k6yj.onrender.com'], // Permite cualquier origen
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Permite los métodos HTTP comunes
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-access-token'], // Permite los encabezados comunes
+  origin: true, // Esto permite cualquier origen de manera más efectiva
+  credentials: true, // Permite credenciales
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-access-token', 'Origin', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
 }));
 app.use(helmet());
 app.use(morgan('dev'));
@@ -35,6 +38,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/entities', entityRoutes);
 app.use('/api/requests', requestRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Documentación Swagger
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
