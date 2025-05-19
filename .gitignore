@@ -40,4 +40,4 @@ coverage/
 *.db
 
 # Firebase
-src/config/serviceAccountKey.jsonsrc/config/serviceaccountKey.json
+src/config/serviceAccountKey.json
