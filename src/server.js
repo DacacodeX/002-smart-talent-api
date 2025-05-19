@@ -30,7 +30,7 @@ app.use(cors({
     'https://smart-talent-api-k6yj.onrender.com',
     'https://tu-frontend-en-produccion.com' // Agrega el dominio de tu frontend
   ],
-  credentials: true,
+  credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-access-token', 'Origin', 'Accept'],
   exposedHeaders: ['Content-Range', 'X-Content-Range']
