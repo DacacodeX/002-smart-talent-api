@@ -3,14 +3,18 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class Document extends Model {
     static associate(models) {
-      
+
     }
   }
 
   Document.init({
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false
+    documentTypeId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'DocumentTypes',
+        key: 'id'
+      }
     },
     url: {
       type: DataTypes.STRING,

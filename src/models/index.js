@@ -8,6 +8,8 @@ const RequestModel = require('./request.model');
 const PersonModel = require('./person.model');
 const DocumentModel = require('./document.model');
 const ResourceModel = require('./resource.model');
+const DocumentTypeModel = require('./documentType.model');
+const ResourceTypeModel = require('./resourceType.model');
 
 // Inicializar modelos
 const User = UserModel(sequelize);
@@ -17,6 +19,8 @@ const Request = RequestModel(sequelize);
 const Person = PersonModel(sequelize);
 const Document = DocumentModel(sequelize);
 const Resource = ResourceModel(sequelize);
+const DocumentType = DocumentTypeModel(sequelize);
+const ResourceType = ResourceTypeModel(sequelize);
 
 // Definir relaciones
 User.belongsToMany(Role, { through: 'UserRoles' });
@@ -34,10 +38,22 @@ Person.belongsTo(Request, { foreignKey: 'requestId', as: 'request' });
 Person.hasMany(Document, { foreignKey: 'personId', as: 'documents' });
 Document.belongsTo(Person, { foreignKey: 'personId', as: 'person'});
 
-Document.hasMany(Resource, { foreignKey: 'documentId',as: 'resources'});
+Document.hasMany(Resource, { foreignKey: 'documentId', as: 'resources'});
 Resource.belongsTo(Document, { foreignKey: 'documentId', as: 'document' });
 
-// Exportar modelos y sequelize
+DocumentType.hasMany(Document, { foreignKey: 'documentTypeId', as: 'documents' });
+Document.belongsTo(DocumentType, { foreignKey: 'documentTypeId', as: 'documentType' });
+
+// Relación muchos a muchos entre DocumentType y ResourceType
+DocumentType.belongsToMany(ResourceType, { 
+  through: 'DocumentTypeResources',
+  as: 'resourceTypes'
+});
+ResourceType.belongsToMany(DocumentType, { 
+  through: 'DocumentTypeResources',
+  as: 'documentTypes'
+});
+
 module.exports = {
   sequelize,
   User,
@@ -46,5 +62,7 @@ module.exports = {
   Request,
   Person,
   Document,
-  Resource
+  Resource,
+  DocumentType,
+  ResourceType
 };

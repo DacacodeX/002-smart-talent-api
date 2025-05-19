@@ -1,4 +1,4 @@
-const { sequelize, Role, User } = require('../models');
+const { sequelize, Role, User, DocumentType, ResourceType } = require('../models');
 require('dotenv').config();
 
 const initDatabase = async () => {
@@ -86,6 +86,95 @@ const initDatabase = async () => {
       console.log('-------------------');
     }
 
+    // Crear tipos de documentos predeterminados
+    const documentTypes = [
+      {
+        name: 'Antecedentes Penales',
+        isActive: true
+      },
+      {
+        name: 'Antecedentes Nacionales',
+        isActive: true
+      },
+      {
+        name: 'Verificación laboral',
+        isActive: true
+      },
+      {
+        name: 'Verificación Académica',
+        isActive: true
+      },
+      {
+        name: 'Verificación Crediticia',
+        isActive: true
+      },
+      {
+        name: 'Verificación Domiciliaria',
+        isActive: true
+      }
+    ];
+
+    // Insertar tipos de documentos
+    const createdDocTypes = await DocumentType.bulkCreate(documentTypes);
+    console.log('Tipos de documentos creados exitosamente');
+
+    // Crear tipos de recursos
+    const resourceTypes = [
+      {
+        name: 'DOCUMENTO_ORIGINAL',
+        description: 'Documento original escaneado',
+        isRequired: true,
+        maxFileSize: 5000000,
+        allowedFileTypes: ['application/pdf', 'image/jpeg', 'image/png']
+      },
+      {
+        name: 'FORMULARIO_FIRMADO',
+        description: 'Formulario firmado por el solicitante',
+        isRequired: true,
+        maxFileSize: 5000000,
+        allowedFileTypes: ['application/pdf', 'image/jpeg', 'image/png']
+      },
+      {
+        name: 'DOCUMENTO_ADICIONAL',
+        description: 'Documentación adicional de soporte',
+        isRequired: false,
+        maxFileSize: 5000000,
+        allowedFileTypes: ['application/pdf', 'image/jpeg', 'image/png']
+      },
+      {
+        name: 'CERTIFICADO_OFICIAL',
+        description: 'Certificado oficial emitido por la entidad',
+        isRequired: true,
+        maxFileSize: 5000000,
+        allowedFileTypes: ['application/pdf']
+      }
+    ];
+
+    // Insertar tipos de recursos
+    const createdResourceTypes = await ResourceType.bulkCreate(resourceTypes);
+    console.log('Tipos de recursos creados exitosamente');
+
+    // Asociar tipos de documentos con tipos de recursos
+    const documentResourceAssociations = [
+      // Antecedentes Penales
+      { docType: createdDocTypes[0], resources: [createdResourceTypes[0], createdResourceTypes[1]] },
+      // Antecedentes Nacionales
+      { docType: createdDocTypes[1], resources: [createdResourceTypes[0], createdResourceTypes[1], createdResourceTypes[2]] },
+      // Verificación laboral
+      { docType: createdDocTypes[2], resources: [createdResourceTypes[0], createdResourceTypes[3]] },
+      // Verificación Académica
+      { docType: createdDocTypes[3], resources: [createdResourceTypes[0], createdResourceTypes[3]] },
+      // Verificación Crediticia
+      { docType: createdDocTypes[4], resources: [createdResourceTypes[0], createdResourceTypes[1]] },
+      // Verificación Domiciliaria
+      { docType: createdDocTypes[5], resources: [createdResourceTypes[0], createdResourceTypes[2]] }
+    ];
+
+    // Crear las asociaciones
+    for (const association of documentResourceAssociations) {
+      await association.docType.addResourceTypes(association.resources);
+    }
+    console.log('Asociaciones entre tipos de documentos y recursos creadas exitosamente');
   } catch (error) {
     console.error('Error al inicializar la base de datos:', error);
     process.exit(1);
