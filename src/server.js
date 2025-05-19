@@ -65,7 +65,8 @@ const connectDB = async () => {
 };
 
 // Iniciar el servidor
-const PORT = process.env.PORT || 3000;
+const PORT =  3002;
+
 app.listen(PORT, async () => {
   await connectDB();
   console.log(`Accede a la API: http://localhost:${PORT}`);
