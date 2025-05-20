@@ -70,6 +70,6 @@ const router = express.Router();
  *                 error:
  *                   type: string
  */
-router.get('/', DocumentTypeController.getAllWithResources);
+router.get('/with-resource-types', DocumentTypeController.getAllWithResources);
 
 module.exports = { documentTypeRoutes: router };
