@@ -33,12 +33,21 @@ const { entityValidation } = require('../middleware/validation.middleware');
  *               firstName:
  *                 type: string
  *                 description: Nombres (requerido para tipo NATURAL)
- *               lastName:
+ *               paternalSurname:
  *                 type: string
- *                 description: Apellidos (requerido para tipo NATURAL)
+ *                 description: Apellido paterno (requerido para tipo NATURAL)
+ *               maternalSurname:
+ *                 type: string
+ *                 description: Apellido materno (requerido para tipo NATURAL)
  *               businessName:
  *                 type: string
  *                 description: Razón social (requerido para tipo JURIDICA)
+ *               address:
+ *                 type: string
+ *                 description: Dirección de la entidad
+ *               phone:
+ *                 type: string
+ *                 description: Teléfono de la entidad
  *               email:
  *                 type: string
  *                 format: email
@@ -90,7 +99,13 @@ router.post('/', [
  *                     type: string
  *                   firstName:
  *                     type: string
- *                   lastName:
+ *                   paternalSurname:
+ *                     type: string
+ *                   maternalSurname:
+ *                     type: string
+ *                   address:
+ *                     type: string
+ *                   phone:
  *                     type: string
  *                   businessName:
  *                     type: string
@@ -146,7 +161,13 @@ router.get('/', [
  *                   type: string
  *                 firstName:
  *                   type: string
- *                 lastName:
+ *                 paternalSurname:
+ *                   type: string
+ *                 maternalSurname:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *                 phone:
  *                   type: string
  *                 businessName:
  *                   type: string
@@ -201,7 +222,13 @@ router.get('/:id', [
  *                 type: string
  *               firstName:
  *                 type: string
- *               lastName:
+ *               paternalSurname:
+ *                 type: string
+ *               maternalSurname:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               phone:
  *                 type: string
  *               businessName:
  *                 type: string

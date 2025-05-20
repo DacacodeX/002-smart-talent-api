@@ -10,7 +10,7 @@ const EntityController = {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { type, documentNumber, firstName, lastName, businessName, email } = req.body;
+      const { type, documentNumber, firstName, paternalSurname, maternalSurname, address, phone, businessName, email } = req.body;
 
       // Verificar si la entidad ya existe por documento
       const entityExists = await Entity.findOne({ 
@@ -33,8 +33,11 @@ const EntityController = {
         type,
         documentNumber,
         firstName,
-        lastName,
+        paternalSurname,
+        maternalSurname,
         businessName,
+        address,
+        phone,
         active: true
       });
 
@@ -126,7 +129,7 @@ const EntityController = {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { type, documentNumber, firstName, lastName, businessName, email, active } = req.body;
+      const { type, documentNumber, firstName, maternalSurname, paternalSurname, address, phone, businessName, email, active } = req.body;
       
       // Buscar entidad
       let entity = await Entity.findByPk(req.params.id);
@@ -151,8 +154,11 @@ const EntityController = {
       entity.type = type || entity.type;
       entity.documentNumber = documentNumber || entity.documentNumber;
       entity.firstName = firstName || entity.firstName;
-      entity.lastName = lastName || entity.lastName;
+      entity.maternalSurname = maternalSurname || entity.maternalSurname;
+      entity.paternalSurname = paternalSurname || entity.paternalSurname;
       entity.businessName = businessName || entity.businessName;
+      entity.address = address || entity.address;
+      entity.phone = phone || entity.phone;
       entity.active = active !== undefined ? active : entity.active;
       
       await entity.save();

@@ -29,20 +29,19 @@ const { authMiddleware, roleMiddleware } = require('../middleware/auth.middlewar
  *                 items:
  *                   type: object
  *                   required:
- *                     - firstName
- *                     - lastName
+ *                     - fullname
  *                     - documentNumber
  *                     - documents
  *                   properties:
- *                     firstName:
+ *                     dni:
  *                       type: string
- *                       description: Nombre de la persona
- *                     lastName:
+ *                       description: Número de DNI
+ *                     fullname:
  *                       type: string
- *                       description: Apellido de la persona
- *                     documentNumber:
+ *                       description: Nombres de la persona
+ *                     phone:
  *                       type: string
- *                       description: Número de documento de la persona
+ *                       description: Número de teléfono
  *                     documents:
  *                       type: array
  *                       items:
@@ -52,28 +51,30 @@ const { authMiddleware, roleMiddleware } = require('../middleware/auth.middlewar
  *                           - number
  *                           - resources
  *                         properties:
- *                           type:
+ *                           documentTypeId:
+ *                             type: number
+ *                             description: ID del tipo de documento
+ *                           name:
  *                             type: string
- *                             description: Tipo de documento
- *                             enum: ['DNI', 'PASSPORT', 'LICENSE']
- *                           number:
- *                             type: string
- *                             description: Número del documento
+ *                             description: Nombre de documento
  *                           resources:
  *                             type: array
  *                             items:
  *                               type: object
  *                               required:
- *                                 - type
- *                                 - url
+ *                                 - resourceTypeId
+ *                                 - name
+ *                                 - value
  *                               properties:
- *                                 type:
+ *                                 resourceTypeId:
+ *                                   type: number
+ *                                   description: ID del tipo de recurso
+ *                                 name:
  *                                   type: string
- *                                   description: Tipo de recurso
- *                                   enum: ['SCAN', 'PHOTO', 'PDF']
- *                                 url:
+ *                                   description: Nombre del recurso
+ *                                 value:
  *                                   type: string
- *                                   description: URL del recurso
+ *                                   description: Valor del recurso
  *     responses:
  *       201:
  *         description: Solicitud creada exitosamente

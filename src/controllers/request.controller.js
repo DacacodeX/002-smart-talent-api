@@ -32,8 +32,9 @@ const RequestController = {
       const createdPeople = await Promise.all(people.map(async (personData) => {
         // Crear persona con los campos actualizados
         const person = await Person.create({
-          names: personData.names,
           dni: personData.dni,
+          fullname: personData.fullname,
+          phone: personData.phone,
           requestId: request.id
         }, { transaction: t });
 
@@ -41,7 +42,8 @@ const RequestController = {
         const createdDocuments = await Promise.all(
           (personData.documents || []).map(async (docData) => {
             const document = await Document.create({
-              ...docData,
+              documentTypeId: docData.id,
+              name: docData.name,
               personId: person.id
             }, { transaction: t });
 
@@ -49,7 +51,9 @@ const RequestController = {
             const createdResources = await Promise.all(
               (docData.resources || []).map(resourceData =>
                 Resource.create({
-                  ...resourceData,
+                  resourceTypeId: resourceData.id,
+                  name: resourceData.name,
+                  value: resourceData.value,
                   documentId: document.id
                 }, { transaction: t })
               )

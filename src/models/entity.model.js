@@ -47,13 +47,24 @@ module.exports = (sequelize) => {
         }
       }
     },
-    lastName: {
+    maternalSurname: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
         isValidForNatural() {
           if (this.type === 'NATURAL' && !this.lastName) {
-            throw new Error('El apellido es requerido para personas naturales');
+            throw new Error('El apellido materno es requerido para personas naturales');
+          }
+        }
+      }
+    },
+    paternalSurname: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isValidForNatural() {
+          if (this.type === 'NATURAL' && !this.lastName) {
+            throw new Error('El apellido paterno es requerido para personas naturales');
           }
         }
       }
@@ -72,6 +83,26 @@ module.exports = (sequelize) => {
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        len: {
+          args: [5, 255],
+          msg: 'La dirección debe tener entre 5 y 255 caracteres'
+        }
+      }
+    },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        is: {
+          args: /^[0-9+\-\s()]{6,20}$/,
+          msg: 'El número de teléfono no tiene un formato válido'
+        }
+      }
     }
   }, {
     sequelize,

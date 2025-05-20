@@ -7,10 +7,6 @@ module.exports = (sequelize) => {
   }
 
   Person.init({
-    names: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     dni: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -19,6 +15,10 @@ module.exports = (sequelize) => {
         notEmpty: true,
         len: [8, 12] 
       }
+    },
+    fullname: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     phone: {
       type: DataTypes.STRING,

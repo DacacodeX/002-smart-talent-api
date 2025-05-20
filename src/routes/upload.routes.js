@@ -57,6 +57,6 @@ const { authMiddleware } = require('../middleware/auth.middleware');
  *       500:
  *         description: Error del servidor
  */
-router.post('/signed-url', authMiddleware, UploadController.getSignedUrl);
+router.post('/signed-url', UploadController.getSignedUrl);
 
 module.exports = { uploadRoutes: router };

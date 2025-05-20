@@ -16,17 +16,17 @@ module.exports = (sequelize) => {
         key: 'id'
       }
     },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     url: {
       type: DataTypes.STRING,
       allowNull: true
     },
     result: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    status: {
-      type: DataTypes.ENUM('PENDING', 'APPROVED', 'REJECTED'),
-      defaultValue: 'PENDING'
+      type: DataTypes.ENUM('Pendiente', 'Realizado', 'Rechazado'),
+      defaultValue: 'Pendiente'
     },
     personId: {
       type: DataTypes.INTEGER,
