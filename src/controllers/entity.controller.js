@@ -11,7 +11,7 @@ const EntityController = {
       }
 
       const { type, documentNumber, firstName, paternalSurname, maternalSurname, address, phone, businessName, email } = req.body;
-
+      
       // Verificar si la entidad ya existe por documento
       const entityExists = await Entity.findOne({ 
         where: { documentNumber }
@@ -27,7 +27,18 @@ const EntityController = {
       if (userExists) {
         return res.status(400).json({ message: 'Ya existe un usuario con este email' });
       }
-
+      console.log({
+        type,
+        documentNumber,
+        firstName,
+        paternalSurname,
+        maternalSurname,
+        businessName,
+        address,
+        phone,
+        active: true
+      });
+      
       // Crear nueva entidad
       const entity = await Entity.create({
         type,
@@ -49,7 +60,7 @@ const EntityController = {
 
       // Crear usuario asociado
       const user = await User.create({
-        username: type === 'NATURAL' ? firstName + lastName : businessName,
+        username: type === 'NATURAL' ? firstName + ' ' + paternalSurname + ' ' + maternalSurname : businessName,
         email,
         password: documentNumber, // La contraseña será el DNI o RUC
         active: true,
@@ -68,7 +79,7 @@ const EntityController = {
         }
       });
     } catch (error) {
-      console.error('Error al crear entidad:', error);
+      console.error('tidad:', error);
       res.status(500).json({ message: 'Error al crear entidad', error: error.message });
     }
   },

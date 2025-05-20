@@ -52,7 +52,7 @@ module.exports = (sequelize) => {
       allowNull: true,
       validate: {
         isValidForNatural() {
-          if (this.type === 'NATURAL' && !this.lastName) {
+          if (this.type === 'NATURAL' && !this.maternalSurname) {
             throw new Error('El apellido materno es requerido para personas naturales');
           }
         }
@@ -63,7 +63,7 @@ module.exports = (sequelize) => {
       allowNull: true,
       validate: {
         isValidForNatural() {
-          if (this.type === 'NATURAL' && !this.lastName) {
+          if (this.type === 'NATURAL' && !this.paternalSurname) {
             throw new Error('El apellido paterno es requerido para personas naturales');
           }
         }
