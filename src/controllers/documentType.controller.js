@@ -8,7 +8,7 @@ const DocumentTypeController = {
                 include: [{
                     model: ResourceType,
                     as: 'resourceTypes',
-                    through: { attributes: [] }, // Excluye los atributos de la tabla intermedia
+                    through: { attributes: [] },
                     attributes: ['id', 'name', 'isRequired', 'maxFileSize', 'allowedFileTypes']
                 }],
                 attributes: ['id', 'name', 'isActive']
