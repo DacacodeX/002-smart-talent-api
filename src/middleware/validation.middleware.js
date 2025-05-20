@@ -68,9 +68,14 @@ const entityValidation = {
     check('firstName')
       .if(check('type').equals('NATURAL'))
       .notEmpty().withMessage('El nombre es requerido para personas naturales'),
-    check('lastName')
+    check('paternalSurname')
       .if(check('type').equals('NATURAL'))
-      .notEmpty().withMessage('El apellido es requerido para personas naturales'),
+      .notEmpty().withMessage('El apellido paterno es requerido para personas naturales'),
+      check('maternalSurname')
+        .if(check('type').equals('NATURAL'))
+        .notEmpty().withMessage('El apellido materno es requerido para personas naturales'),
+      check('phone')
+        .notEmpty().withMessage('El número de teléfono es requerido'),
     check('businessName')
       .if(check('type').equals('JURIDICA'))
       .notEmpty().withMessage('La razón social es requerida para personas jurídicas')
