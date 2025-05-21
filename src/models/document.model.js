@@ -20,11 +20,15 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    result: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     url: {
       type: DataTypes.STRING,
       allowNull: true
     },
-    result: {
+    status: {
       type: DataTypes.ENUM('Pendiente', 'Realizado', 'Rechazado'),
       defaultValue: 'Pendiente'
     },
