@@ -42,6 +42,14 @@ module.exports = (sequelize) => {
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
+    },
+    entityId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Entities',
+        key: 'id'
+      }
     }
   }, {
     sequelize,

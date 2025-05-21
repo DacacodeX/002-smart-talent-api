@@ -59,6 +59,7 @@ const AuthController = {
           id: userWithRoles.id,
           username: userWithRoles.username,
           email: userWithRoles.email,
+          entityId: userWithRoles.entityId,
           roles: roleNames
         }
       });
@@ -81,8 +82,8 @@ const AuthController = {
 
       // Buscar usuario por email e incluir la contraseña y roles
       const user = await User.findOne({
-        where: { email: email },
-        attributes: { include: ['password'] }, // Incluir la contraseña para la comparación
+        where: { email: email },        attributes: { include: ['password'] }, // Include password for comparison and id for related entity
+
         include: [{
           model: Role,
           attributes: ['name'], // Solo necesitamos el nombre del rol
@@ -125,6 +126,7 @@ const AuthController = {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          entityId: user.entityId,
           roles: roleNames
         }
       });
