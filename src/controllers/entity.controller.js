@@ -1,86 +1,23 @@
 const { Entity, User, Role, Request } = require('../models');
 const { validationResult } = require('express-validator');
+const EntityService = require('../services/entity.service');
 
 const EntityController = {
   create: async (req, res) => {
     try {
-      // Verificar errores de validación
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { type, documentNumber, firstName, paternalSurname, maternalSurname, address, phone, businessName, email } = req.body;
-      
-      // Verificar si la entidad ya existe por documento
-      const entityExists = await Entity.findOne({ 
-        where: { documentNumber }
-      });
-      if (entityExists) {
-        return res.status(400).json({ message: 'Ya existe una entidad con este número de documento' });
-      }
-
-      // Verificar si ya existe un usuario con ese email
-      const userExists = await User.findOne({
-        where: { email, active: true }
-      });
-      if (userExists) {
-        return res.status(400).json({ message: 'Ya existe un usuario con este email' });
-      }
-      console.log({
-        type,
-        documentNumber,
-        firstName,
-        paternalSurname,
-        maternalSurname,
-        businessName,
-        address,
-        phone,
-        active: true
-      });
-      
-      // Crear nueva entidad
-      const entity = await Entity.create({
-        type,
-        documentNumber,
-        firstName,
-        paternalSurname,
-        maternalSurname,
-        businessName,
-        address,
-        phone,
-        active: true
-      });
-
-      // Obtener el rol USER
-      const userRole = await Role.findOne({ where: { name: 'USER' } });
-      if (!userRole) {
-        return res.status(500).json({ message: 'Error al asignar rol: Rol USER no encontrado' });
-      }
-
-      // Crear usuario asociado
-      const user = await User.create({
-        username: type === 'NATURAL' ? firstName + ' ' + paternalSurname + ' ' + maternalSurname : businessName,
-        email,
-        password: documentNumber, // La contraseña será el DNI o RUC
-        active: true,
-        entityId: entity.id  // Establecer la relación con la entidad
-      });
-
-      // Asignar rol al usuario
-      await user.setRoles([userRole]);
+      const result = await EntityService.createEntityWithUser(req.body);
 
       res.status(201).json({
         message: 'Entidad y usuario creados exitosamente',
-        entity,
-        user: {
-          email: user.email,
-          username: user.username
-        }
+        ...result
       });
     } catch (error) {
-      console.error('tidad:', error);
-      res.status(500).json({ message: 'Error al crear entidad', error: error.message });
+      res.status(400).json({ message: error.message });
     }
   },
 

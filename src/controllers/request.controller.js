@@ -172,10 +172,6 @@ const RequestController = {
               END
             `),
             'owner'
-          ],
-          [
-            sequelize.literal(`"request"."status"`),
-            'status'
           ]
         ]
       });

@@ -8,10 +8,6 @@ module.exports = (sequelize) => {
   }
 
   Request.init({
-    status: {
-      type: DataTypes.ENUM('PENDING', 'IN_PROGRESS', 'COMPLETED', 'REJECTED'),
-      defaultValue: 'PENDING'
-    },
     entityId: {
       type: DataTypes.INTEGER,
       allowNull: false

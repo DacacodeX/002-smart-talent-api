@@ -35,6 +35,9 @@ const { authValidation } = require('../middleware/validation.middleware');
  *                 type: string
  *                 format: password
  *                 description: Contraseña del usuario
+ *           example:
+ *             email: admin@smarttalent.com
+ *             password: Admin@123
  *     responses:
  *       200:
  *         description: Login exitoso

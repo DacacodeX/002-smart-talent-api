@@ -111,7 +111,7 @@ router.post('/', [
 
 /**
  * @swagger
- * /api/requests/entity/{entityId}/persons:
+ * /api/requests/entity/{entityId}/people:
  *   get:
  *     summary: Obtener todas las personas de una entidad específica
  *     tags: [Requests]
@@ -133,9 +133,9 @@ router.post('/', [
  *       500:
  *         description: Error del servidor
  */
-router.get('/entity/:entityId/persons', [
+router.get('/entity/:entityId/people', [
   authMiddleware,
-  roleMiddleware(['ADMIN', 'MANAGER'])
+  roleMiddleware(['USER'])
 ], RequestController.getAllPersonsByEntityId);
 
 /**

@@ -1,4 +1,5 @@
 const { sequelize, Role, User, DocumentType, ResourceType } = require('../models');
+const EntityService = require('../services/entity.service');
 require('dotenv').config();
 
 const initDatabase = async () => {
@@ -85,6 +86,32 @@ const initDatabase = async () => {
       console.log(`Contraseña: ${userInfo.password}`);
       console.log('-------------------');
     }
+
+    // Entidad Natural por defecto
+    const entidadNatural = await EntityService.createEntityWithUser({
+      type: 'NATURAL',
+      documentNumber: '12345678',
+      firstName: 'Juan',
+      paternalSurname: 'Pérez',
+      maternalSurname: 'García',
+      address: 'Calle Falsa 123',
+      phone: '999888777',
+      email: 'natural@prueba.com',
+      active: true
+    });
+    console.log('Entidad NATURAL por defecto creada');
+
+    // Entidad Jurídica por defecto
+    const entidadJuridica = await EntityService.createEntityWithUser({
+      type: 'JURIDICA',
+      documentNumber: '20123456789',
+      businessName: 'Empresa Ejemplo SAC',
+      address: 'Av. Principal 456',
+      phone: '988877766',
+      email: 'juridica@prueba.com',
+      active: true
+    });
+    console.log('Entidad JURIDICA por defecto creada');
 
     // Crear tipos de documentos predeterminados
     const documentTypes = [

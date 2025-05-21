@@ -30,7 +30,11 @@ module.exports = (sequelize) => {
     requestId: {
       type: DataTypes.INTEGER,
       allowNull: false
-    }
+    },
+    status: {
+      type: DataTypes.ENUM('PENDING', 'IN_PROGRESS', 'COMPLETED', 'REJECTED'),
+      defaultValue: 'PENDING'
+    },
   }, {
     sequelize,
     modelName: 'Person'
