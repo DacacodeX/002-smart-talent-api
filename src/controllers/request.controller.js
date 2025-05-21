@@ -144,23 +144,39 @@ const RequestController = {
     try {
       // Obtener todas las personas con sus relaciones
       const people = await Person.findAll({
-        include: [
-          {
-            model: Request,
-            as: 'request',
-            include: [{
-              model: Entity,
-              as: 'entity',
-            }]
-          },
-          {
-            model: Document,
-            as: 'documents',
-            include: [{
-              model: Resource,
-              as: 'resources'
-            }]
-          }
+        include: [{
+          model: Request,
+          as: 'request',
+          include: [{
+            model: Entity,
+            as: 'entity'
+          }]
+        }, {
+          model: Document,
+          as: 'documents',
+          include: [{
+            model: Resource,
+            as: 'resources'
+          }]
+        }],
+        attributes: [
+          'id',
+          'dni', 
+          'fullname',
+          'phone',
+          [
+            sequelize.literal(`
+              CASE 
+                WHEN "request->entity"."type" = 'JURIDICA' THEN "request->entity"."businessName"
+                ELSE CONCAT("request->entity"."firstName", ' ', "request->entity"."paternalSurname", ' ', "request->entity"."maternalSurname")
+              END
+            `),
+            'owner'
+          ],
+          [
+            sequelize.literal(`"request"."status"`),
+            'status'
+          ]
         ]
       });
 
