@@ -164,6 +164,7 @@ const RequestController = {
           'dni', 
           'fullname',
           'phone',
+          'status',
           [
             sequelize.literal(`
               CASE 
