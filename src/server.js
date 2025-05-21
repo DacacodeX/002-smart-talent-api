@@ -15,6 +15,7 @@ const { entityRoutes } = require('./routes/entity.routes');
 const { requestRoutes } = require('./routes/request.routes');
 const { uploadRoutes } = require('./routes/upload.routes');
 const { documentTypeRoutes } = require('./routes/documentType.routes');
+const { documentRoutes } = require('./routes/document.routes');
 
 // Inicializar la aplicación
 const app = express();
@@ -47,6 +48,7 @@ app.use('/api/entities', entityRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/document-types', documentTypeRoutes);
+app.use('/api/documents', documentRoutes);
 
 // Documentación Swagger
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));

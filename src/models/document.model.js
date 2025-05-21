@@ -24,7 +24,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true
     },
-    url: {
+    filename: {
       type: DataTypes.STRING,
       allowNull: true
     },
