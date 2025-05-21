@@ -151,7 +151,6 @@ const RequestController = {
             include: [{
               model: Entity,
               as: 'entity',
-              attributes: ['id', 'type', 'documentNumber', 'firstName', 'lastName', 'businessName']
             }]
           },
           {
