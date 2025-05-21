@@ -42,7 +42,7 @@ const RequestController = {
         const createdDocuments = await Promise.all(
           (personData.documents || []).map(async (docData) => {
             const document = await Document.create({
-              documentTypeId: docData.id,
+              documentTypeId: docData.documentTypeId,
               name: docData.name,
               personId: person.id
             }, { transaction: t });
@@ -51,7 +51,7 @@ const RequestController = {
             const createdResources = await Promise.all(
               (docData.resources || []).map(resourceData =>
                 Resource.create({
-                  resourceTypeId: resourceData.id,
+                  resourceTypeId: resourceData.resourceTypeId,
                   name: resourceData.name,
                   value: resourceData.value,
                   documentId: document.id
