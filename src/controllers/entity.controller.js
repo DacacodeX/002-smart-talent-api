@@ -116,7 +116,7 @@ const EntityController = {
         const user = await User.findOne({ where: { email: entity.email } });
         if (user) {
           user.email = email;
-          user.username = type === 'NATURAL' ? firstName + lastName : businessName;
+          user.username = type === 'NATURAL' ? `${firstName} ${paternalSurname} ${maternalSurname}` : businessName;
           await user.save();
         }
       }
