@@ -20,7 +20,10 @@ const DocumentController = {
           continue;
         }
         if (result !== undefined) document.result = result;
-        if (filename !== undefined) document.filename = filename;
+        if (filename !== undefined) {
+          document.filename = filename;
+          document.status = 'Realizado'
+        }
         await document.save();
         results.push({ id, status: 'updated' });
       }

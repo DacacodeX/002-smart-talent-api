@@ -121,9 +121,27 @@ const RequestController = {
         }]
       });
 
-      // Extraer todas las personas de las solicitudes
+      // Get all people and calculate their status
       const people = requests.reduce((acc, request) => {
-        return acc.concat(request.persons || []);
+        const persons = request.persons || [];
+        return acc.concat(persons.map(person => {
+          const documents = person.documents || [];
+          let status = 'PENDING';
+          
+          const hasCompletedDocs = documents.some(doc => doc.status === 'Realizado');
+          const hasPendingDocs = documents.some(doc => doc.status !== 'Realizado');
+          
+          if (hasCompletedDocs && hasPendingDocs) {
+            status = 'IN_PROGRESS';
+          } else if (!hasPendingDocs && documents.length > 0) {
+            status = 'COMPLETED';
+          }
+          
+          return {
+            ...person.toJSON(),
+            status
+          };
+        }));
       }, []);
 
       res.status(200).json({
@@ -164,7 +182,6 @@ const RequestController = {
           'dni', 
           'fullname',
           'phone',
-          'status',
           [
             sequelize.literal(`
               CASE 
@@ -173,6 +190,28 @@ const RequestController = {
               END
             `),
             'owner'
+          ],
+          [
+            sequelize.literal(`
+              CASE
+                WHEN EXISTS (
+                  SELECT 1 FROM "Documents" d 
+                  WHERE d."personId" = "Person"."id" 
+                  AND d."status" = 'Realizado'
+                ) AND EXISTS (
+                  SELECT 1 FROM "Documents" d 
+                  WHERE d."personId" = "Person"."id" 
+                  AND d."status" != 'Realizado'
+                ) THEN 'IN_PROGRESS'
+                WHEN NOT EXISTS (
+                  SELECT 1 FROM "Documents" d 
+                  WHERE d."personId" = "Person"."id" 
+                  AND d."status" != 'Realizado'
+                ) THEN 'COMPLETED'
+                ELSE 'PENDING'
+              END
+            `),
+            'status'
           ]
         ]
       });
