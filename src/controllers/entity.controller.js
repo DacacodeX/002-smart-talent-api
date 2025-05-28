@@ -1,6 +1,7 @@
 const { Entity, User, Role, Request } = require('../models');
 const { validationResult } = require('express-validator');
 const EntityService = require('../services/entity.service');
+const { Op } = require('sequelize');
 
 const EntityController = {
   create: async (req, res) => {
@@ -77,8 +78,8 @@ const EntityController = {
         return res.status(400).json({ errors: errors.array() });
       }
 
-      const { type, documentNumber, firstName, maternalSurname, paternalSurname, address, phone, businessName, email, active } = req.body;
-      
+      const changes = req.body;
+
       // Buscar entidad
       let entity = await Entity.findByPk(req.params.id);
       if (!entity) {
@@ -86,10 +87,10 @@ const EntityController = {
       }
 
       // Verificar si el documento ya existe en otra entidad
-      if (documentNumber) {
+      if (changes.documentNumber) {
         const existingEntity = await Entity.findOne({
           where: {
-            documentNumber,
+            documentNumber: changes.documentNumber,
             id: { [Op.ne]: req.params.id } // Excluir la entidad actual
           }
         });
@@ -98,25 +99,18 @@ const EntityController = {
         }
       }
 
-      // Actualizar datos
-      entity.type = type || entity.type;
-      entity.documentNumber = documentNumber || entity.documentNumber;
-      entity.firstName = firstName || entity.firstName;
-      entity.maternalSurname = maternalSurname || entity.maternalSurname;
-      entity.paternalSurname = paternalSurname || entity.paternalSurname;
-      entity.businessName = businessName || entity.businessName;
-      entity.address = address || entity.address;
-      entity.phone = phone || entity.phone;
-      entity.active = active !== undefined ? active : entity.active;
-      
-      await entity.save();
+      const updatedEntity = await Entity.update(changes, {
+        where: {
+          id: req.params.id
+        }
+      });
 
       // Si se proporciona email, actualizar el usuario asociado
-      if (email) {
-        const user = await User.findOne({ where: { email: entity.email } });
+      if (updatedEntity.email) {
+        const user = await User.findOne({ where: { email: updatedEntity.email } });
         if (user) {
-          user.email = email;
-          user.username = type === 'NATURAL' ? `${firstName} ${paternalSurname} ${maternalSurname}` : businessName;
+          user.email = updatedEntity.email;
+          user.username = type === 'NATURAL' ? `${updatedEntity.firstName} ${updatedEntity.paternalSurname} ${updatedEntity.maternalSurname}` : businessName;
           await user.save();
         }
       }
