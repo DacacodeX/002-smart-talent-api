@@ -116,10 +116,6 @@ const initDatabase = async () => {
     // Crear tipos de documentos predeterminados
     const documentTypes = [
       {
-        name: 'Antecedentes Penales',
-        isActive: true
-      },
-      {
         name: 'Antecedentes Nacionales',
         isActive: true
       },
@@ -148,33 +144,56 @@ const initDatabase = async () => {
     // Crear tipos de recursos
     const resourceTypes = [
       {
-        name: 'DOCUMENTO_ORIGINAL',
+        name: 'Documento de Identidad (ejm: DNI)',
         description: 'Documento original escaneado',
         isRequired: true,
-        maxFileSize: 5000000,
+        maxFileSize: 500000,
         allowedFileTypes: ['application/pdf', 'image/jpeg', 'image/png']
       },
       {
-        name: 'FORMULARIO_FIRMADO',
-        description: 'Formulario firmado por el solicitante',
-        isRequired: true,
-        maxFileSize: 5000000,
-        allowedFileTypes: ['application/pdf', 'image/jpeg', 'image/png']
-      },
-      {
-        name: 'DOCUMENTO_ADICIONAL',
-        description: 'Documentación adicional de soporte',
+        name: 'Observaciones',
+        description: 'Cualquier observación adicional',
         isRequired: false,
-        maxFileSize: 5000000,
+        maxFileSize: 0,
+        allowedFileTypes: []
+      },
+      {
+        name: 'Ubicación',
+        description: 'Coordenadas GPS del lugar de domicilio',
+        isRequired: true,
+        maxFileSize: 0,
+        allowedFileTypes: []
+      },
+
+      {
+        name: 'Dirección',
+        description: 'Dirección domiciliaria del solicitante',
+        isRequired: true,
+        maxFileSize: 0,
+        allowedFileTypes: []
+      },
+
+      {
+        name: 'Referencia',
+        description: 'Alguna referencia adicional',
+        isRequired: false,
+        maxFileSize: 0,
+        allowedFileTypes: []
+      },
+      {
+        name: 'Documento laboral (ejm: CV)',
+        description: 'Cualquier documento de trabajo',
+        isRequired: true,
+        maxFileSize: 500000,
         allowedFileTypes: ['application/pdf', 'image/jpeg', 'image/png']
       },
       {
-        name: 'CERTIFICADO_OFICIAL',
-        description: 'Certificado oficial emitido por la entidad',
+        name: 'Certificado académico (ejm: Título)',
+        description: 'Cualquier certificado académico',
         isRequired: true,
-        maxFileSize: 5000000,
-        allowedFileTypes: ['application/pdf']
-      }
+        maxFileSize: 500000,
+        allowedFileTypes: ['application/pdf', 'image/jpeg', 'image/png']
+      },
     ];
 
     // Insertar tipos de recursos
@@ -183,18 +202,16 @@ const initDatabase = async () => {
 
     // Asociar tipos de documentos con tipos de recursos
     const documentResourceAssociations = [
-      // Antecedentes Penales
-      { docType: createdDocTypes[0], resources: [createdResourceTypes[0], createdResourceTypes[1]] },
       // Antecedentes Nacionales
-      { docType: createdDocTypes[1], resources: [createdResourceTypes[0], createdResourceTypes[1], createdResourceTypes[2]] },
+      { docType: createdDocTypes[0], resources: [createdResourceTypes[0], createdResourceTypes[1]] },
       // Verificación laboral
-      { docType: createdDocTypes[2], resources: [createdResourceTypes[0], createdResourceTypes[3]] },
+      { docType: createdDocTypes[1], resources: [createdResourceTypes[5], createdResourceTypes[1]] },
       // Verificación Académica
-      { docType: createdDocTypes[3], resources: [createdResourceTypes[0], createdResourceTypes[3]] },
+      { docType: createdDocTypes[2], resources: [createdResourceTypes[6], createdResourceTypes[1]] },
       // Verificación Crediticia
-      { docType: createdDocTypes[4], resources: [createdResourceTypes[0], createdResourceTypes[1]] },
+      { docType: createdDocTypes[3], resources: [createdResourceTypes[1]] },
       // Verificación Domiciliaria
-      { docType: createdDocTypes[5], resources: [createdResourceTypes[0], createdResourceTypes[2]] }
+      { docType: createdDocTypes[4], resources: [createdResourceTypes[2], createdResourceTypes[3], createdResourceTypes[4]] }
     ];
 
     // Crear las asociaciones
